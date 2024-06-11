@@ -15,7 +15,7 @@ def is_package_published(package_name: Optional[str], version: Optional[str], re
     url = f"{registry_url}/{package_name}/{version}/json"
 
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=60)
         return response.status_code == 200
     except requests.exceptions.ConnectionError:
         return False

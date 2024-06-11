@@ -38,7 +38,7 @@ class MigrateDataCenter:
         The data center is already embedded in API keys, but not OAuth access tokens.
         This method retrieves the data center for OAuth credentials.
         """
-        response = requests.get("https://login.mailchimp.com/oauth2/metadata", headers={"Authorization": "OAuth {}".format(access_token)})
+        response = requests.get("https://login.mailchimp.com/oauth2/metadata", headers={"Authorization": "OAuth {}".format(access_token)}, timeout=60)
 
         # Requests to this endpoint will return a 200 status code even if the access token is invalid.
         error = response.json().get("error")

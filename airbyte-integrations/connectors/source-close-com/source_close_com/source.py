@@ -91,7 +91,7 @@ class CloseComStreamCustomFields(CloseComStream):
 
     def get_custom_field_schema(self) -> Mapping[str, Any]:
         """Get custom field schema if it exists."""
-        resp = requests.request("GET", url=f"{self.url_base}/custom_field/{self.path()}/", headers=self.authenticator.get_auth_header())
+        resp = requests.request("GET", url=f"{self.url_base}/custom_field/{self.path()}/", headers=self.authenticator.get_auth_header(), timeout=60)
         resp.raise_for_status()
         resp_json: Mapping[str, Any] = resp.json()["data"]
         return {f"custom.{data['id']}": {"type": ["null", "string", "number", "boolean"]} for data in resp_json}
@@ -691,7 +691,7 @@ class SourceCloseCom(AbstractSource):
         try:
             authenticator = Base64HttpAuthenticator(auth=(config["api_key"], "")).get_auth_header()
             url = "https://api.close.com/api/v1/me"
-            response = requests.request("GET", url=url, headers=authenticator)
+            response = requests.request("GET", url=url, headers=authenticator, timeout=60)
             response.raise_for_status()
             return True, None
         except Exception as e:

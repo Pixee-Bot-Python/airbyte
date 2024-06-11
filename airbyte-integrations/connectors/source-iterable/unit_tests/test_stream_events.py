@@ -200,7 +200,7 @@ def test_events_parse_response(response_objects, expected_objects, jsonl_body, c
         body=response_body
     )
 
-    response = requests.get("https://api.iterable.com/api/export/userEvents?includeCustomEvents=true&email=user1")
+    response = requests.get("https://api.iterable.com/api/export/userEvents?includeCustomEvents=true&email=user1", timeout=60)
 
     stream = next(filter(lambda x: x.name == "events", SourceIterable().streams(config=config)))
 

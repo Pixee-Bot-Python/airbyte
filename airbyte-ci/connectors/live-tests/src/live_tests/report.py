@@ -48,7 +48,7 @@ class Report:
         self.update(ReportState.INITIALIZING)
 
     def get_secret_properties(self) -> list:
-        response = requests.get(self.SPEC_SECRET_MASK_URL)
+        response = requests.get(self.SPEC_SECRET_MASK_URL, timeout=60)
         response.raise_for_status()
         return yaml.safe_load(response.text)["properties"]
 

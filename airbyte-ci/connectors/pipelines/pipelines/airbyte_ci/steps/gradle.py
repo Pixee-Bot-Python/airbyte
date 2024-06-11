@@ -71,7 +71,7 @@ class GradleTask(Step, ABC):
         return f"./gradlew {' '.join(self.gradle_task_options + args)} {task} {' '.join(task_options)}"
 
     def get_last_cdk_update_time(self) -> str:
-        response = requests.get(self.CDK_MAVEN_METADATA_URL)
+        response = requests.get(self.CDK_MAVEN_METADATA_URL, timeout=60)
         response.raise_for_status()
         last_updated = ET.fromstring(response.text).find(".//lastUpdated")
         if last_updated is None or last_updated.text is None:

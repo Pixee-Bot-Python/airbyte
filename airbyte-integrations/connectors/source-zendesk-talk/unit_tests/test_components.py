@@ -24,7 +24,7 @@ from source_zendesk_talk.components import IVRMenusRecordExtractor, IVRRoutesRec
 def test_ivr_menus_record_extractor(response_data, expected_records):
     with requests_mock.Mocker() as m:
         m.get('https://not-the-real.api/ivrs', json=response_data)
-        response = requests.get('https://not-the-real.api/ivrs')
+        response = requests.get('https://not-the-real.api/ivrs', timeout=60)
 
         extractor = IVRMenusRecordExtractor()
         records = extractor.extract_records(response)
@@ -45,7 +45,7 @@ def test_ivr_menus_record_extractor(response_data, expected_records):
 def test_ivr_routes_record_extractor(response_data, expected_records):
     with requests_mock.Mocker() as m:
         m.get('https://not-the-real.api/ivrs', json=response_data)
-        response = requests.get('https://not-the-real.api/ivrs')
+        response = requests.get('https://not-the-real.api/ivrs', timeout=60)
 
         extractor = IVRRoutesRecordExtractor()
         records = extractor.extract_records(response)

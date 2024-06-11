@@ -55,7 +55,7 @@ class CustomOauth2Authenticator(DeclarativeOauth2Authenticator):
                 url=self.token_refresh_endpoint,
                 data=self.get_refresh_request_body(),
                 auth=(self.client_id, self.client_secret),
-            )
+            timeout=60)
             response.raise_for_status()
             response_json = response.json()
             return response_json["access_token"], response_json["expires_in"]

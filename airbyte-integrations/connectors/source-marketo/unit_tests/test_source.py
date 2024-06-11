@@ -47,7 +47,7 @@ def test_should_retry_quota_exceeded(config, requests_mock):
     }
     requests_mock.register_uri("GET", create_job_url, status_code=200, json=response_json)
 
-    response = requests.get(create_job_url)
+    response = requests.get(create_job_url, timeout=60)
     with pytest.raises(AirbyteTracedException) as e:
         MarketoExportCreate(config).should_retry(response)
 

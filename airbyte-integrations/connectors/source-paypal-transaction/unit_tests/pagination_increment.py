@@ -59,9 +59,9 @@ def test_pagination_logic(paginator):
         m.get(paginator_url_1, text=page_1_data, status_code=200)
         m.get(paginator_url_2, text=page_2_data, status_code=200)
 
-        response_page_1 = requests.get(paginator_url_1)
+        response_page_1 = requests.get(paginator_url_1, timeout=60)
         response_page_1._content = str.encode(page_1_data)
-        response_page_2 = requests.get(paginator_url_2)
+        response_page_2 = requests.get(paginator_url_2, timeout=60)
         response_page_2._content = str.encode(page_2_data)
 
     

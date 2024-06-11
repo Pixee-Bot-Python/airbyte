@@ -120,7 +120,7 @@ def test_should_retry_on_max_rate_limit_error(requests_mock, test_config, test_r
     stream = get_stream_by_name("boards", test_config)
     url = "https://api.pinterest.com/v5/boards"
     requests_mock.get("https://api.pinterest.com/v5/boards", json=test_response, status_code=status_code)
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
     result = stream.retriever.requester._should_retry(response)
     assert result is expected
 
@@ -129,7 +129,7 @@ def test_non_json_response(requests_mock, patch_base_class):
     stream = PinterestStream(config=MagicMock())
     url = "https://api.pinterest.com/v5/boards"
     requests_mock.get("https://api.pinterest.com/v5/boards", text="some response", status_code=200)
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
     try:
         stream.should_retry(response)
         assert False
@@ -164,7 +164,7 @@ def test_backoff_on_rate_limit_error(
         status_code=status_code,
     )
 
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
 
     if isinstance(expected, tuple):
         with pytest.raises(expected[0], match=expected[1]):

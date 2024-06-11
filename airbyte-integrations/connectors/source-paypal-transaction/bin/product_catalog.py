@@ -49,7 +49,7 @@ def get_paypal_token(client_id, secret_id):
         "Authorization": "Basic " + base64.b64encode(f"{client_id}:{secret_id}".encode()).decode(),
     }
     payload = {"grant_type": "client_credentials"}
-    response = requests.post(url=url, data=payload, headers=headers)
+    response = requests.post(url=url, data=payload, headers=headers, timeout=60)
     return response.json().get("access_token")
 
 
@@ -66,7 +66,7 @@ def create_paypal_product(access_token, description="Cotton XL", category="cloth
         "image_url": "https://example.com/gallary/images/" + generate_random_string(10) + ".jpg",
         "home_url": "https://example.com/catalog/" + generate_random_string(10) + ".jpg",
     }
-    response = requests.post(url=url, json=payload, headers=headers)
+    response = requests.post(url=url, json=payload, headers=headers, timeout=60)
     return response.json()
 
 
@@ -74,7 +74,7 @@ def update_paypal_product(access_token, product_id, updates):
     """Update a product in PayPal."""
     url = f"https://api-m.sandbox.paypal.com/v1/catalogs/products/{product_id}"
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {access_token}"}
-    response = requests.patch(url=url, json=updates, headers=headers)
+    response = requests.patch(url=url, json=updates, headers=headers, timeout=60)
     if response.status_code == 204:
         print(f"Update Successful. Response {response.status_code}. This succesful repsonse has no response body")
         return None

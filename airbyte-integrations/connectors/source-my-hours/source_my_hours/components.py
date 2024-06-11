@@ -54,7 +54,7 @@ class CustomAuthenticator(NoAuth):
             "grantType": "refresh_token",
         }
         try:
-            response = requests.post(url, headers=headers, json=data)
+            response = requests.post(url, headers=headers, json=data, timeout=60)
             response.raise_for_status()
             modified_response = {
                 "access_token": response.json().get("accessToken"),
@@ -77,7 +77,7 @@ class CustomAuthenticator(NoAuth):
             }
 
             url = "https://api2.myhours.com/api/tokens/login"
-            rest = requests.post(url, headers=headers, json=data)
+            rest = requests.post(url, headers=headers, json=data, timeout=60)
             if rest.status_code != HTTPStatus.OK:
                 raise HTTPError(rest.text)
             return (rest.json().get("accessToken"), rest.json().get("refreshToken"))

@@ -127,7 +127,7 @@ class SourceMicrosoftSharePointStreamReader(AbstractFileBasedStreamReader):
         base_url = f"https://graph.microsoft.com/v1.0/drives/{drive_id}"
 
         def get_files(url: str, path: str) -> List[Tuple[str, str, datetime]]:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=60)
             if response.status_code != 200:
                 error_info = response.json().get("error", {}).get("message", "No additional error information provided.")
                 raise RuntimeError(f"Failed to retrieve files from URL '{url}'. HTTP status: {response.status_code}. Error: {error_info}")
@@ -145,7 +145,7 @@ class SourceMicrosoftSharePointStreamReader(AbstractFileBasedStreamReader):
 
         # Initial request to item endpoint
         item_url = f"{base_url}/items/{object_id}"
-        item_response = requests.get(item_url, headers=headers)
+        item_response = requests.get(item_url, headers=headers, timeout=60)
         if item_response.status_code != 200:
             error_info = item_response.json().get("error", {}).get("message", "No additional error information provided.")
             raise RuntimeError(

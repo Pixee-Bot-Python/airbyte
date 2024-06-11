@@ -37,7 +37,7 @@ def get_paypal_token(client_id, secret_id):
         "Authorization": "Basic " + base64.b64encode(f"{client_id}:{secret_id}".encode()).decode(),
     }
     payload = {"grant_type": "client_credentials"}
-    response = requests.post(url=url, data=payload, headers=headers)
+    response = requests.post(url=url, data=payload, headers=headers, timeout=60)
     return response.json().get("access_token")
 
 
@@ -64,7 +64,7 @@ def create_payment(token, security_context):
         "redirect_urls": {"return_url": "https://example.com/return", "cancel_url": "https://example.com/cancel"},
     }
 
-    response = requests.post(url, headers=headers, json=payload)
+    response = requests.post(url, headers=headers, json=payload, timeout=60)
     return response.json()
 
 
@@ -72,7 +72,7 @@ def update_payment(token, payment_id, updates):
     """Update a PayPal payment."""
     url = f"https://api-m.paypal.com/v1/payments/payment/{payment_id}"
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
-    response = requests.patch(url, headers=headers, json=updates)
+    response = requests.patch(url, headers=headers, json=updates, timeout=60)
     return response.json()
 
 

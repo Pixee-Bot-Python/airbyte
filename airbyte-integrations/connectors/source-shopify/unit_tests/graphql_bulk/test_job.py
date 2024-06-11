@@ -102,7 +102,7 @@ def test_job_retry_on_concurrency(request, requests_mock, bulk_job_response, con
 def test_job_process_created(request, requests_mock, bulk_job_response, auth_config, expected) -> None:
     stream = MetafieldOrders(auth_config)
     requests_mock.get(stream.job_manager.base_url, json=request.getfixturevalue(bulk_job_response))
-    test_response = requests.get(stream.job_manager.base_url)
+    test_response = requests.get(stream.job_manager.base_url, timeout=60)
     # process the job with id (typically CREATED one)
     stream.job_manager._job_process_created(test_response)
     assert stream.job_manager._job_id == expected
@@ -137,7 +137,7 @@ def test_job_check_for_completion(mocker, request, requests_mock, job_response, 
     stream.job_manager._job_check_interval = 1
     # mocking the response for STATUS CHECKS
     requests_mock.post(stream.job_manager.base_url, json=request.getfixturevalue(job_response))
-    test_job_status_response = requests.post(stream.job_manager.base_url)
+    test_job_status_response = requests.post(stream.job_manager.base_url, timeout=60)
     job_result_url = test_job_status_response.json().get("data", {}).get("node", {}).get("url")
     if error_type:
         with pytest.raises(error_type) as error:
@@ -223,7 +223,7 @@ def test_job_check_with_running_scenario(request, requests_mock, job_response, a
     job_id = request.getfixturevalue(job_response).get("data", {}).get("node", {}).get("id")
     # mocking the response for STATUS CHECKS
     requests_mock.post(stream.job_manager.base_url, json=request.getfixturevalue(job_response))
-    test_job_status_response = requests.post(stream.job_manager.base_url)
+    test_job_status_response = requests.post(stream.job_manager.base_url, timeout=60)
     job_result_url = test_job_status_response.json().get("data", {}).get("node", {}).get("url")
     # test the state of the job isn't assigned
     assert stream.job_manager._job_state == None

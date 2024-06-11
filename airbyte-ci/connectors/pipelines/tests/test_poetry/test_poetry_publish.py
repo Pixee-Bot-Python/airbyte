@@ -81,10 +81,10 @@ async def test_run_poetry_publish(context: PythonRegistryPublishContext, package
     tunnel = await context.dagger_client.host().tunnel(pypi_registry).start()
     endpoint = await tunnel.endpoint(scheme="http")
     list_url = f"{endpoint}/simple/"
-    list_response = requests.get(list_url)
+    list_response = requests.get(list_url, timeout=60)
     assert list_response.status_code == 200
     assert package_name in list_response.text
     url = f"{endpoint}/simple/{package_name}"
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
     assert response.status_code == 200
     assert expected_asset in response.text

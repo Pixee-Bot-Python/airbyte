@@ -31,7 +31,7 @@ class AstraClient:
 
     def _run_query(self, request_url: str, query: Dict):
         try:
-            response = requests.request("POST", request_url, headers=self.request_header, data=json.dumps(query))
+            response = requests.request("POST", request_url, headers=self.request_header, data=json.dumps(query), timeout=60)
             if response.status_code == 200:
                 response_dict = json.loads(response.text)
                 if "errors" in response_dict:

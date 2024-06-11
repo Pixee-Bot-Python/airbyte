@@ -46,7 +46,7 @@ class SourceSurveymonkey(YamlDeclarativeSource):
         # Check scopes
         try:
             authenticator = self.get_authenticator(config)
-            response = requests.get(url="https://api.surveymonkey.com/v3/users/me", headers=authenticator.get_auth_header())
+            response = requests.get(url="https://api.surveymonkey.com/v3/users/me", headers=authenticator.get_auth_header(), timeout=60)
             response.raise_for_status()
             return self._check_scopes(response.json())
         except Exception as e:

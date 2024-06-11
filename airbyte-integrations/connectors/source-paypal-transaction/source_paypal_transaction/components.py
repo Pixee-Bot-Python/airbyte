@@ -60,7 +60,7 @@ class PayPalOauth2Authenticator(DeclarativeOauth2Authenticator):
 
             logger.info(f"Sending request to URL: {request_url}")
 
-            response = requests.request(method="POST", url=request_url, data=request_body, headers=request_headers)
+            response = requests.request(method="POST", url=request_url, data=request_body, headers=request_headers, timeout=60)
 
             self._log_response(response)
             response.raise_for_status()

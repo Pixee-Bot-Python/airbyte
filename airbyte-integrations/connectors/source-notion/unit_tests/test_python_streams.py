@@ -370,7 +370,7 @@ def test_should_not_retry_with_ai_block(requests_mock):
         "message": "Block type ai_block is not supported via the API.",
     }
     requests_mock.get("https://api.notion.com/v1/blocks/123", json=json_response, status_code=400)
-    test_response = requests.get("https://api.notion.com/v1/blocks/123")
+    test_response = requests.get("https://api.notion.com/v1/blocks/123", timeout=60)
     assert not stream.should_retry(test_response)
 
 
@@ -382,7 +382,7 @@ def test_should_not_retry_with_not_found_block(requests_mock):
         "message": "Not Found for url: https://api.notion.com/v1/blocks/123/children?page_size=100",
     }
     requests_mock.get("https://api.notion.com/v1/blocks/123", json=json_response, status_code=404)
-    test_response = requests.get("https://api.notion.com/v1/blocks/123")
+    test_response = requests.get("https://api.notion.com/v1/blocks/123", timeout=60)
     assert not stream.should_retry(test_response)
 
 
@@ -444,7 +444,7 @@ def test_request_throttle(initial_page_size, expected_page_size, mock_response, 
 
     stream = Pages(config={"authenticator": "auth"})
     stream.page_size = initial_page_size
-    response = requests.get("https://api.notion.com/v1/users")
+    response = requests.get("https://api.notion.com/v1/users", timeout=60)
 
     stream.should_retry(response=response)
 

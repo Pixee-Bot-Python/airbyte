@@ -47,7 +47,7 @@ def get_paypal_token(client_id, secret_id):
         "Authorization": "Basic " + base64.b64encode(f"{client_id}:{secret_id}".encode()).decode(),
     }
     payload = {"grant_type": "client_credentials"}
-    response = requests.post(url=url, data=payload, headers=headers)
+    response = requests.post(url=url, data=payload, headers=headers, timeout=60)
     return response.json().get("access_token")
 
 
@@ -142,7 +142,7 @@ def create_draft_invoice(access_token, invoice_date, term_type, due_date):
             }
         },
     }
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, headers=headers, json=data, timeout=60)
     return response.json()
 
 
@@ -157,7 +157,7 @@ def send_draft_invoice(access_token, invoice_id, subject, note, additional_recip
         "additional_recipients": additional_recipients,
         "send_to_invoicer": False,
     }
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, headers=headers, json=data, timeout=60)
     return response.json()
 
 

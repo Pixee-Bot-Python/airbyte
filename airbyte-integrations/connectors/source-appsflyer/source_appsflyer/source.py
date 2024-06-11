@@ -371,7 +371,7 @@ class SourceAppsflyer(AbstractSource):
             dates = pendulum.now("UTC").to_date_string()
             test_url = f"https://hq1.appsflyer.com/api/agg-data/export/app/{app_id}/partners_report/v5?from={dates}&to={dates}&timezone=UTC"
             headers = {"Authorization": f"Bearer {api_token}"}
-            response = requests.request("GET", url=test_url, headers=headers)
+            response = requests.request("GET", url=test_url, headers=headers, timeout=60)
 
             if response.status_code != 200:
                 error_message = "The supplied APP ID is invalid" if response.status_code == 404 else response.text.rstrip("\n")

@@ -33,7 +33,7 @@ def get_paypal_token(client_id, secret_id):
         "Authorization": "Basic " + base64.b64encode(f"{client_id}:{secret_id}".encode()).decode(),
     }
     payload = {"grant_type": "client_credentials"}
-    response = requests.post(url=url, data=payload, headers=headers)
+    response = requests.post(url=url, data=payload, headers=headers, timeout=60)
     return response.json().get("access_token")
 
 
@@ -41,7 +41,7 @@ def update_dispute(token, dispute_id, updates):
     """Update a PayPal dispute."""
     url = f"https://api-m.paypal.com/v1/customer/disputes/{dispute_id}"
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
-    response = requests.patch(url, headers=headers, json=updates)
+    response = requests.patch(url, headers=headers, json=updates, timeout=60)
     print("RESPONSE: ", response.text)
     return response.json()
 
@@ -51,7 +51,7 @@ def require_evidence(token, dispute_id, action):
     url = f"https://api-m.paypal.com/v1/customer/disputes/{dispute_id}/require-evidence"
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {token}"}
     payload = {"action": action}
-    response = requests.post(url, headers=headers, json=payload)
+    response = requests.post(url, headers=headers, json=payload, timeout=60)
     print("RESPONSE: ", response.text)
     return response.json()
 

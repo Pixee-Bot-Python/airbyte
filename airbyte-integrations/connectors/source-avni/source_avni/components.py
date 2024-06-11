@@ -31,7 +31,7 @@ class CustomAuthenticator(BasicHttpAuthenticator):
     def get_client_id(self):
 
         url_client = "https://app.avniproject.org/idp-details"
-        response = requests.get(url_client)
+        response = requests.get(url_client, timeout=60)
         response.raise_for_status()
         client = response.json()
         return client["cognito"]["clientId"]

@@ -20,7 +20,7 @@ PYTHON_CDK_SLUG = "python"
 
 def safe_get_json_from_url(url: str) -> Optional[dict]:
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=60)
         if response.ok:
             return response.json()
         else:

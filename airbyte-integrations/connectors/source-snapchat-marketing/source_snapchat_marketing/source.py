@@ -771,7 +771,7 @@ class SourceSnapchatMarketing(AbstractSource):
             token = auth.get_access_token()
             url = f"{SnapchatMarketingStream.url_base}me"
 
-            session = requests.get(url, headers={"Authorization": "Bearer {}".format(token)})
+            session = requests.get(url, headers={"Authorization": "Bearer {}".format(token)}, timeout=60)
             session.raise_for_status()
             return True, None
 

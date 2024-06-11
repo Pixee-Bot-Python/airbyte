@@ -44,7 +44,7 @@ class PinterestOauthAuthenticator(DeclarativeOauth2Authenticator):
                 url=self.get_token_refresh_endpoint(),
                 headers=self.get_refresh_access_token_headers(),
                 data=self.build_refresh_request_body(),
-            )
+            timeout=60)
             if response.ok:
                 response_json = response.json()
                 access_key = response_json.get(self.get_access_token_name())

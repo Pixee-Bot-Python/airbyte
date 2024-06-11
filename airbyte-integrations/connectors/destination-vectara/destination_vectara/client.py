@@ -90,7 +90,7 @@ class VectaraClient:
         data = {"grant_type": "client_credentials", "client_id": self.client_id, "client_secret": self.client_secret}
 
         request_time = datetime.datetime.now().timestamp()
-        response = requests.request(method="POST", url=token_endpoint, headers=headers, data=data)
+        response = requests.request(method="POST", url=token_endpoint, headers=headers, data=data, timeout=60)
         response_json = response.json()
 
         self.jwt_token = response_json.get("access_token")
@@ -114,7 +114,7 @@ class VectaraClient:
             "X-source": "airbyte",
         }
 
-        response = requests.request(method=http_method, url=url, headers=headers, params=params, data=json.dumps(data))
+        response = requests.request(method=http_method, url=url, headers=headers, params=params, data=json.dumps(data), timeout=60)
         response.raise_for_status()
         return response.json()
 

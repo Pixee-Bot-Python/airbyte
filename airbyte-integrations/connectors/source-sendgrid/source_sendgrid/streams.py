@@ -159,7 +159,7 @@ class Contacts(SendgridStream):
 
         url_parsed = urlparse(url)
         tmp_file = os.path.realpath(os.path.basename(url_parsed.path[1:-5]))
-        download_session = requests.get(f"{url}", stream=True)
+        download_session = requests.get(f"{url}", stream=True, timeout=60)
         with closing(download_session) as response, open(tmp_file, "wb") as data_file:
             for chunk in response.iter_content(chunk_size=chunk_size):
                 try:

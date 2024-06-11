@@ -1607,7 +1607,7 @@ class TestConnectorDocumentation(BaseTest):
         threads = []
 
         def validate_docs_links(docs_link):
-            response = requests.get(docs_link)
+            response = requests.get(docs_link, timeout=60)
             if response.status_code not in valid_status_codes:
                 invalid_links.append(docs_link)
 

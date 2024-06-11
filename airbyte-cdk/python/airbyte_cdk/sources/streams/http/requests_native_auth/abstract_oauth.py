@@ -115,7 +115,7 @@ class AbstractOauth2Authenticator(AuthBase):
     )
     def _get_refresh_access_token_response(self) -> Any:
         try:
-            response = requests.request(method="POST", url=self.get_token_refresh_endpoint(), data=self.build_refresh_request_body())
+            response = requests.request(method="POST", url=self.get_token_refresh_endpoint(), data=self.build_refresh_request_body(), timeout=60)
             if response.ok:
                 response_json = response.json()
                 # Add the access token to the list of secrets so it is replaced before logging the response

@@ -112,7 +112,7 @@ def get_api_token():
     data = "grant_type=client_credentials"
     headers = {"Accept": "application/json", "Accept-Language": "en_US"}
     auth = (client_id, secret)
-    response = requests.request(method="POST", url=token_refresh_endpoint, data=data, headers=headers, auth=auth)
+    response = requests.request(method="POST", url=token_refresh_endpoint, data=data, headers=headers, auth=auth, timeout=60)
     response_json = response.json()
     print("RESPONSE -->", response_json)
     API_TOKEN = response_json["access_token"]
@@ -131,8 +131,8 @@ def make_payment():
     PAYMENT_DATA["transactions"][0]["invoice_number"] = random_digits(11)
 
     response = requests.request(
-        method="POST", url="https://api-m.sandbox.paypal.com/v1/payments/payment", headers=headers, data=json.dumps(PAYMENT_DATA)
-    )
+        method="POST", url="https://api-m.sandbox.paypal.com/v1/payments/payment", headers=headers, data=json.dumps(PAYMENT_DATA), 
+    timeout=60)
     response_json = response.json()
     # pprint(response_json)
 
@@ -195,7 +195,7 @@ def approve_payment(driver, url):
 def execute_payment(url):
     try:
         # Attempt to make the POST request
-        response = requests.post(url, data=json.dumps({"payer_id": CREDS.get("payer_id")}), headers=headers)
+        response = requests.post(url, data=json.dumps({"payer_id": CREDS.get("payer_id")}), headers=headers, timeout=60)
         response_json = response.json()
         # Check if the request was successful
         if response.status_code == 200:

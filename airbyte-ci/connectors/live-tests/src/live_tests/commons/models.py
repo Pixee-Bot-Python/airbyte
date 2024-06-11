@@ -432,7 +432,7 @@ class ExecutionResult:
             "authorization": f"Bearer {get_airbyte_api_key()}",
         }
 
-        response = requests.patch(url, json=payload, headers=headers)
+        response = requests.patch(url, json=payload, headers=headers, timeout=60)
         try:
             response.raise_for_status()
         except requests.HTTPError as e:

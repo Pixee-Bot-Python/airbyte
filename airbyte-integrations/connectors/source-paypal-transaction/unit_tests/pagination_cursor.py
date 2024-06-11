@@ -132,7 +132,7 @@ def test_cursor_pagination(cursor_pagination_strategy, mock_responses):
                 cursor_pagination_strategy(mock_responses, stop_condition = True)
 
             # Make API call and process response
-            response = requests.get(url)
+            response = requests.get(url, timeout=60)
             print("GET RESPONSE:", response)
             assert response.status_code == 200
             

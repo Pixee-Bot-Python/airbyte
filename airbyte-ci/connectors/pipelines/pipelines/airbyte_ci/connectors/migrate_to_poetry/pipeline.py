@@ -146,7 +146,7 @@ class PoetryInit(Step):
         url = f"https://pypi.org/pypi/{package_name}/json"
 
         # Send GET request to the PyPI API
-        response = requests.get(url)
+        response = requests.get(url, timeout=60)
         response.raise_for_status()  # Raise an exception for any HTTP error status
 
         # Parse the JSON response
