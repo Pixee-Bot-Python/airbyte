@@ -6,6 +6,7 @@ from typing import Optional
 
 import requests
 from orchestrator.models.metadata import LatestMetadataEntry
+from security import safe_requests
 
 GROUP_NAME = "connector_cdk_versions"
 
@@ -20,7 +21,7 @@ PYTHON_CDK_SLUG = "python"
 
 def safe_get_json_from_url(url: str) -> Optional[dict]:
     try:
-        response = requests.get(url)
+        response = safe_requests.get(url)
         if response.ok:
             return response.json()
         else:

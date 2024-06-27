@@ -18,7 +18,6 @@ import connector_acceptance_test.utils.docs as docs_utils
 import dpath.util
 import jsonschema
 import pytest
-import requests
 from airbyte_protocol.models import (
     AirbyteMessage,
     AirbyteRecordMessage,
@@ -66,6 +65,7 @@ from connector_acceptance_test.utils.json_schema_helper import (
     get_paths_in_connector_config,
 )
 from connector_acceptance_test.utils.timeouts import FIVE_MINUTES, ONE_MINUTE, TEN_MINUTES
+from security import safe_requests
 
 pytestmark = [
     pytest.mark.anyio,
@@ -1607,7 +1607,7 @@ class TestConnectorDocumentation(BaseTest):
         threads = []
 
         def validate_docs_links(docs_link):
-            response = requests.get(docs_link)
+            response = safe_requests.get(docs_link)
             if response.status_code not in valid_status_codes:
                 invalid_links.append(docs_link)
 

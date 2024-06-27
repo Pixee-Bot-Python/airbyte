@@ -13,13 +13,13 @@ from pathlib import Path
 from typing import List, Optional, Set, Tuple, Union
 
 import git
-import requests
 import yaml
 from ci_credentials import SecretsManager
 from pydash.collections import find
 from pydash.objects import get
 from rich.console import Console
 from simpleeval import simple_eval
+from security import safe_requests
 
 console = Console()
 
@@ -52,7 +52,7 @@ TEST_GRADLE_DEPENDENCIES = [
 
 
 def download_catalog(catalog_url):
-    response = requests.get(catalog_url)
+    response = safe_requests.get(catalog_url)
     response.raise_for_status()
     return response.json()
 

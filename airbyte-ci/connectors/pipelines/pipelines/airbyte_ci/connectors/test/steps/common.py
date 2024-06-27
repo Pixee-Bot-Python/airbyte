@@ -28,6 +28,7 @@ from pipelines.helpers.utils import METADATA_FILE_NAME, get_exec_result
 from pipelines.models.secrets import Secret
 from pipelines.models.steps import STEP_PARAMS, MountPath, Step, StepResult, StepStatus
 from slugify import slugify
+from security import safe_requests
 
 
 class VersionCheck(Step, ABC):
@@ -47,7 +48,7 @@ class VersionCheck(Step, ABC):
 
     @cached_property
     def master_metadata(self) -> Optional[dict]:
-        response = requests.get(self.github_master_metadata_url)
+        response = safe_requests.get(self.github_master_metadata_url)
 
         # New connectors will not have a metadata file in master
         if not response.ok:
