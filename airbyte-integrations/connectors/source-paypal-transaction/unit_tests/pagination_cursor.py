@@ -14,6 +14,7 @@ from airbyte_cdk.sources.declarative.interpolation.interpolated_boolean import I
 from airbyte_cdk.sources.declarative.interpolation.interpolated_string import InterpolatedString
 from airbyte_cdk.sources.declarative.requesters.paginators.strategies.pagination_strategy import PaginationStrategy
 from airbyte_cdk.sources.declarative.types import Config
+from security import safe_requests
 
 
 @dataclass
@@ -132,7 +133,7 @@ def test_cursor_pagination(cursor_pagination_strategy, mock_responses):
                 cursor_pagination_strategy(mock_responses, stop_condition = True)
 
             # Make API call and process response
-            response = requests.get(url)
+            response = safe_requests.get(url)
             print("GET RESPONSE:", response)
             assert response.status_code == 200
             

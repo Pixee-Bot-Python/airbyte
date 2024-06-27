@@ -5,13 +5,13 @@
 from unittest.mock import MagicMock
 
 import pytest
-import requests
 from dagger import Client, Platform
 from pipelines.airbyte_ci.connectors.publish import pipeline as publish_pipeline
 from pipelines.dagger.actions.python.poetry import with_poetry
 from pipelines.models.contexts.python_registry_publish import PythonPackageMetadata, PythonRegistryPublishContext
 from pipelines.models.secrets import InMemorySecretStore, Secret
 from pipelines.models.steps import StepStatus
+from security import safe_requests
 
 pytestmark = [
     pytest.mark.anyio,
@@ -81,10 +81,10 @@ async def test_run_poetry_publish(context: PythonRegistryPublishContext, package
     tunnel = await context.dagger_client.host().tunnel(pypi_registry).start()
     endpoint = await tunnel.endpoint(scheme="http")
     list_url = f"{endpoint}/simple/"
-    list_response = requests.get(list_url)
+    list_response = safe_requests.get(list_url)
     assert list_response.status_code == 200
     assert package_name in list_response.text
     url = f"{endpoint}/simple/{package_name}"
-    response = requests.get(url)
+    response = safe_requests.get(url)
     assert response.status_code == 200
     assert expected_asset in response.text

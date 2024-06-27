@@ -10,12 +10,11 @@ from copy import deepcopy
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
-
-import requests
 import yaml
 from jinja2 import Environment, PackageLoader, select_autoescape
 from live_tests import stash_keys
 from live_tests.consts import MAX_LINES_IN_REPORT
+from security import safe_requests
 
 if TYPE_CHECKING:
     import pytest
@@ -48,7 +47,7 @@ class Report:
         self.update(ReportState.INITIALIZING)
 
     def get_secret_properties(self) -> list:
-        response = requests.get(self.SPEC_SECRET_MASK_URL)
+        response = safe_requests.get(self.SPEC_SECRET_MASK_URL)
         response.raise_for_status()
         return yaml.safe_load(response.text)["properties"]
 

@@ -5,6 +5,7 @@ from unittest import TestCase
 import pytest
 import requests
 from airbyte_cdk.test.mock_http import HttpMocker, HttpRequest, HttpResponse
+from security import safe_requests
 
 # Ensure that the scheme is HTTP as requests only partially supports other schemes
 # see https://github.com/psf/requests/blob/0b4d494192de489701d3a2e32acef8fb5d3f042e/src/requests/models.py#L424-L429
@@ -28,7 +29,7 @@ class HttpMockerTest(TestCase):
             HttpResponse(_A_RESPONSE_BODY, 474, _OTHER_HEADERS),
         )
 
-        response = requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
+        response = safe_requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
 
         assert response.text == _A_RESPONSE_BODY
         assert response.status_code == 474
@@ -54,7 +55,7 @@ class HttpMockerTest(TestCase):
             HttpResponse(_A_RESPONSE_BODY, 474),
         )
 
-        requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS | {"more strict query param key": "any value"})
+        safe_requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS | {"more strict query param key": "any value"})
 
     @HttpMocker()
     def test_given_post_request_match_when_decorate_then_return_response(self, http_mocker):
@@ -75,8 +76,8 @@ class HttpMockerTest(TestCase):
             [HttpResponse(_A_RESPONSE_BODY, 1), HttpResponse(_ANOTHER_RESPONSE_BODY, 2)],
         )
 
-        first_response = requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
-        second_response = requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
+        first_response = safe_requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
+        second_response = safe_requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
 
         assert first_response.text == _A_RESPONSE_BODY
         assert first_response.status_code == 1
@@ -120,7 +121,7 @@ class HttpMockerTest(TestCase):
             [HttpResponse(_A_RESPONSE_BODY, 1), HttpResponse(_ANOTHER_RESPONSE_BODY, 2)],
         )
 
-        last_response = [requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS) for _ in range(10)][-1]
+        last_response = [safe_requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS) for _ in range(10)][-1]
 
         assert last_response.text == _ANOTHER_RESPONSE_BODY
         assert last_response.status_code == 2
@@ -131,7 +132,7 @@ class HttpMockerTest(TestCase):
             HttpRequest(_A_URL, _SOME_QUERY_PARAMS, _SOME_HEADERS),
             _A_RESPONSE,
         )
-        requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
+        safe_requests.get(_A_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
 
     def test_given_missing_requests_when_decorate_then_raise(self):
         @HttpMocker()
@@ -178,7 +179,7 @@ class HttpMockerTest(TestCase):
                 HttpRequest(_A_URL),
                 _A_RESPONSE,
             )
-            requests.get(_ANOTHER_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
+            safe_requests.get(_ANOTHER_URL, params=_SOME_QUERY_PARAMS, headers=_SOME_HEADERS)
 
         with pytest.raises(ValueError) as exc_info:
             decorated_function()
@@ -198,7 +199,7 @@ class HttpMockerTest(TestCase):
                 HttpRequest(_A_URL, headers=less_granular_headers),
                 _A_RESPONSE,
             )
-            requests.get(_A_URL, headers=more_granular_headers)
+            safe_requests.get(_A_URL, headers=more_granular_headers)
 
         with pytest.raises(ValueError) as exc_info:
             decorated_function()

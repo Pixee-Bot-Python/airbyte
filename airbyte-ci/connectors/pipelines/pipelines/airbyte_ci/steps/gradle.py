@@ -7,7 +7,6 @@ from datetime import datetime
 from typing import Any, ClassVar, List, Optional, Tuple, cast
 
 import pipelines.dagger.actions.system.docker
-import requests
 from dagger import CacheSharingMode, CacheVolume, Container, ExecError
 from pipelines.airbyte_ci.connectors.context import ConnectorContext
 from pipelines.consts import AMAZONCORRETTO_IMAGE
@@ -16,6 +15,7 @@ from pipelines.hacks import never_fail_exec
 from pipelines.helpers.utils import dagger_directory_as_zip_file, sh_dash_c
 from pipelines.models.artifacts import Artifact
 from pipelines.models.steps import Step, StepResult
+from security import safe_requests
 
 
 class GradleTask(Step, ABC):
@@ -71,7 +71,7 @@ class GradleTask(Step, ABC):
         return f"./gradlew {' '.join(self.gradle_task_options + args)} {task} {' '.join(task_options)}"
 
     def get_last_cdk_update_time(self) -> str:
-        response = requests.get(self.CDK_MAVEN_METADATA_URL)
+        response = safe_requests.get(self.CDK_MAVEN_METADATA_URL)
         response.raise_for_status()
         last_updated = ET.fromstring(response.text).find(".//lastUpdated")
         if last_updated is None or last_updated.text is None:

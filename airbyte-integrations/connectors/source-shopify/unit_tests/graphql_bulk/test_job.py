@@ -22,6 +22,7 @@ from source_shopify.streams.streams import (
     ProductVariants,
     TransactionsGraphql,
 )
+from security import safe_requests
 
 _ANY_SLICE = {}
 _ANY_FILTER_FIELD = "any_filter_field"
@@ -102,7 +103,7 @@ def test_job_retry_on_concurrency(request, requests_mock, bulk_job_response, con
 def test_job_process_created(request, requests_mock, bulk_job_response, auth_config, expected) -> None:
     stream = MetafieldOrders(auth_config)
     requests_mock.get(stream.job_manager.base_url, json=request.getfixturevalue(bulk_job_response))
-    test_response = requests.get(stream.job_manager.base_url)
+    test_response = safe_requests.get(stream.job_manager.base_url)
     # process the job with id (typically CREATED one)
     stream.job_manager._job_process_created(test_response)
     assert stream.job_manager._job_id == expected

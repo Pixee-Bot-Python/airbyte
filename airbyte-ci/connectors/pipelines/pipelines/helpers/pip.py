@@ -3,6 +3,7 @@
 from typing import Optional
 
 import requests
+from security import safe_requests
 
 
 def is_package_published(package_name: Optional[str], version: Optional[str], registry_url: str) -> bool:
@@ -15,7 +16,7 @@ def is_package_published(package_name: Optional[str], version: Optional[str], re
     url = f"{registry_url}/{package_name}/{version}/json"
 
     try:
-        response = requests.get(url)
+        response = safe_requests.get(url)
         return response.status_code == 200
     except requests.exceptions.ConnectionError:
         return False

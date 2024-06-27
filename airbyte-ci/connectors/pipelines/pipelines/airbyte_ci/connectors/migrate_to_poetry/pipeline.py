@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 
 import dagger
 import git
-import requests
 import toml
 from connector_ops.utils import ConnectorLanguage  # type: ignore
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -20,6 +19,7 @@ from pipelines.consts import LOCAL_BUILD_PLATFORM
 from pipelines.dagger.actions.python.common import with_python_connector_installed
 from pipelines.helpers.execution.run_steps import STEP_TREE, StepToRun, run_steps
 from pipelines.models.steps import Step, StepResult, StepStatus
+from security import safe_requests
 
 if TYPE_CHECKING:
     from typing import Iterable, List, Optional
@@ -146,7 +146,7 @@ class PoetryInit(Step):
         url = f"https://pypi.org/pypi/{package_name}/json"
 
         # Send GET request to the PyPI API
-        response = requests.get(url)
+        response = safe_requests.get(url)
         response.raise_for_status()  # Raise an exception for any HTTP error status
 
         # Parse the JSON response

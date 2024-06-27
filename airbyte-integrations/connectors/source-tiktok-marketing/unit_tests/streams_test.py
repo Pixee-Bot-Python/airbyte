@@ -7,7 +7,6 @@ from unittest.mock import MagicMock, PropertyMock, patch
 
 import pendulum
 import pytest
-import requests
 from source_tiktok_marketing.source import get_report_stream
 from source_tiktok_marketing.streams import (
     AdGroupsReports,
@@ -25,6 +24,7 @@ from source_tiktok_marketing.streams import (
     Lifetime,
     ReportGranularity,
 )
+from security import safe_requests
 
 START_DATE = "2020-01-01"
 END_DATE = "2020-03-01"
@@ -283,7 +283,7 @@ def test_no_next_page_token(requests_mock):
     stream = Advertisers("2021-01-01", "2021-01-02")
     url = stream.url_base + stream.path()
     requests_mock.get(url, json={"data": {"page_info": {}}})
-    test_response = requests.get(url)
+    test_response = safe_requests.get(url)
     assert stream.next_page_token(test_response) is None
 
 

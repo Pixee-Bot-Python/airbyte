@@ -8,8 +8,6 @@ from datetime import datetime
 from functools import lru_cache
 from io import IOBase
 from typing import Iterable, List, Optional, Tuple
-
-import requests
 import smart_open
 from airbyte_cdk import AirbyteTracedException, FailureType
 from airbyte_cdk.sources.file_based.file_based_stream_reader import AbstractFileBasedStreamReader, FileReadMode
@@ -19,6 +17,7 @@ from office365.graph_client import GraphClient
 from source_microsoft_sharepoint.spec import SourceMicrosoftSharePointSpec
 
 from .utils import MicrosoftSharePointRemoteFile, execute_query_with_retry, filter_http_urls
+from security import safe_requests
 
 
 class SourceMicrosoftSharePointClient:
@@ -127,7 +126,7 @@ class SourceMicrosoftSharePointStreamReader(AbstractFileBasedStreamReader):
         base_url = f"https://graph.microsoft.com/v1.0/drives/{drive_id}"
 
         def get_files(url: str, path: str) -> List[Tuple[str, str, datetime]]:
-            response = requests.get(url, headers=headers)
+            response = safe_requests.get(url, headers=headers)
             if response.status_code != 200:
                 error_info = response.json().get("error", {}).get("message", "No additional error information provided.")
                 raise RuntimeError(f"Failed to retrieve files from URL '{url}'. HTTP status: {response.status_code}. Error: {error_info}")
@@ -145,7 +144,7 @@ class SourceMicrosoftSharePointStreamReader(AbstractFileBasedStreamReader):
 
         # Initial request to item endpoint
         item_url = f"{base_url}/items/{object_id}"
-        item_response = requests.get(item_url, headers=headers)
+        item_response = safe_requests.get(item_url, headers=headers)
         if item_response.status_code != 200:
             error_info = item_response.json().get("error", {}).get("message", "No additional error information provided.")
             raise RuntimeError(
