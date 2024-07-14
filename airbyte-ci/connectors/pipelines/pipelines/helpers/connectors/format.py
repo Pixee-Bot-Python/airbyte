@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List
 
 from pipelines.cli.ensure_repo_root import get_airbyte_repo_path_with_fallback
+from security import safe_command
 
 
 async def format_prettier(files: List[Path]) -> None:
@@ -20,7 +21,7 @@ async def format_prettier(files: List[Path]) -> None:
 
     print(f"       Formatting files: npx prettier --write {' '.join(to_format)}")
     command = ["npx", "prettier", "--config", str(config_path), "--write"] + to_format
-    result = subprocess.run(command, capture_output=True, text=True)
+    result = safe_command.run(subprocess.run, command, capture_output=True, text=True)
     if result.returncode == 0:
         print("Files formatted successfully.")
     else:

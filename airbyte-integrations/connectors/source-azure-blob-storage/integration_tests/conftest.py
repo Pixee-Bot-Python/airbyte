@@ -19,6 +19,7 @@ from pandas import read_csv
 from source_azure_blob_storage import SourceAzureBlobStorage
 
 from .utils import get_docker_ip, load_config
+from security import safe_command
 
 logger = logging.getLogger("airbyte")
 
@@ -49,7 +50,7 @@ def get_container_client() -> ContainerClient:
 
 def generate_random_csv_with_source_faker():
     """Generate csv files using source-faker and save output to folder: /tmp/csv"""
-    subprocess.run(f"{os.path.dirname(__file__)}/csv_export/main.sh")
+    safe_command.run(subprocess.run, f"{os.path.dirname(__file__)}/csv_export/main.sh")
 
 
 @pytest.fixture(scope="session", autouse=True)
