@@ -2,11 +2,11 @@
 
 import json
 from datetime import datetime
-from random import randint
 
 from airbyte_cdk.test.mock_http import HttpRequest, HttpResponse
 from source_shopify.shopify_graphql.bulk.query import ShopifyBulkTemplates
 from source_shopify.streams.base_streams import ShopifyStream
+import secrets
 
 
 def _create_job_url(shop_name: str) -> str:
@@ -162,8 +162,8 @@ class MetafieldOrdersJobResponseBuilder:
         self._records = []
 
     def _any_record(self) -> str:
-        an_id = str(randint(1000000000000, 9999999999999))
-        a_parent_id = str(randint(1000000000000, 9999999999999))
+        an_id = str(secrets.SystemRandom().randint(1000000000000, 9999999999999))
+        a_parent_id = str(secrets.SystemRandom().randint(1000000000000, 9999999999999))
         return f"""{{"__typename":"Order","id":"gid:\/\/shopify\/Order\/{a_parent_id}"}}
 {{"__typename":"Metafield","id":"gid:\/\/shopify\/Metafield\/{an_id}","namespace":"my_fields","value":"asdfasdf","key":"purchase_order","description":null,"createdAt":"2023-04-13T12:09:50Z","updatedAt":"2024-05-05T01:09:50Z","type":"single_line_text_field","__parentId":"gid:\/\/shopify\/Order\/{a_parent_id}"}}
 """

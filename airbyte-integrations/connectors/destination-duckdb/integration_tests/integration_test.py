@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import random
 import string
 import tempfile
 import time
@@ -30,6 +29,7 @@ from airbyte_cdk.models import (
 from destination_duckdb import DestinationDuckdb
 from destination_duckdb.destination import CONFIG_MOTHERDUCK_API_KEY
 from faker import Faker
+import secrets
 
 CONFIG_PATH = "integration_tests/config.json"
 SECRETS_CONFIG_PATH = (
@@ -56,7 +56,7 @@ def pytest_generate_tests(metafunc):
 @pytest.fixture(scope="module")
 def test_schema_name() -> str:
     letters = string.ascii_lowercase
-    rand_string = "".join(random.choice(letters) for _ in range(6))
+    rand_string = "".join(secrets.choice(letters) for _ in range(6))
     return f"test_schema_{rand_string}"
 
 
@@ -92,14 +92,14 @@ def disable_destination_modification(monkeypatch, request):
 @pytest.fixture(scope="module")
 def test_table_name() -> str:
     letters = string.ascii_lowercase
-    rand_string = "".join(random.choice(letters) for _ in range(10))
+    rand_string = "".join(secrets.choice(letters) for _ in range(10))
     return f"airbyte_integration_{rand_string}"
 
 
 @pytest.fixture
 def test_large_table_name() -> str:
     letters = string.ascii_lowercase
-    rand_string = "".join(random.choice(letters) for _ in range(10))
+    rand_string = "".join(secrets.choice(letters) for _ in range(10))
     return f"airbyte_integration_{rand_string}"
 
 @pytest.fixture
@@ -246,7 +246,7 @@ def _airbyte_messages(n: int, batch_size: int, table_name: str) -> Generator[Air
 def _airbyte_messages_with_inconsistent_json_fields(n: int, batch_size: int, table_name: str) -> Generator[AirbyteMessage, None, None]:
     fake = Faker()
     Faker.seed(0)
-    random.seed(0)
+    secrets.SystemRandom().seed(0)
 
     for i in range(n):
         if i != 0 and i % batch_size == 0:
@@ -260,17 +260,17 @@ def _airbyte_messages_with_inconsistent_json_fields(n: int, batch_size: int, tab
                     stream=table_name,
                     # Throw in empty nested objects and see how pyarrow deals with them.
                     data={"key1": fake.first_name(),
-                          "key2": fake.ssn() if random.random()< 0.5 else random.randrange(1000,9999999999999),
-                          "nested1": {} if random.random()< 0.1 else {
+                          "key2": fake.ssn() if secrets.SystemRandom().random()< 0.5 else secrets.SystemRandom().randrange(1000,9999999999999),
+                          "nested1": {} if secrets.SystemRandom().random()< 0.1 else {
                               "key3": fake.first_name(),
-                              "key4": fake.ssn() if random.random()< 0.5 else random.randrange(1000,9999999999999),
-                              "dictionary1":{} if random.random()< 0.1 else {
+                              "key4": fake.ssn() if secrets.SystemRandom().random()< 0.5 else secrets.SystemRandom().randrange(1000,9999999999999),
+                              "dictionary1":{} if secrets.SystemRandom().random()< 0.1 else {
                                   "key3": fake.first_name(),
-                                  "key4": "True" if random.random() < 0.5 else True
+                                  "key4": "True" if secrets.SystemRandom().random() < 0.5 else True
                                   }
                               }
                           }
-                          if random.random() < 0.9 else {},
+                          if secrets.SystemRandom().random() < 0.9 else {},
 
                     emitted_at=int(datetime.now().timestamp()) * 1000,
                 ),

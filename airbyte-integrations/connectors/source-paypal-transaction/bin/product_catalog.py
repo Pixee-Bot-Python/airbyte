@@ -24,10 +24,10 @@
 import argparse
 import base64
 import json
-import random
 import string
 
 import requests
+import secrets
 
 
 def read_json(filepath):
@@ -38,7 +38,7 @@ def read_json(filepath):
 def generate_random_string(length=10):
     """Generate a random string of fixed length."""
     letters = string.ascii_letters
-    return "".join(random.choice(letters) for i in range(length))
+    return "".join(secrets.choice(letters) for i in range(length))
 
 
 def get_paypal_token(client_id, secret_id):

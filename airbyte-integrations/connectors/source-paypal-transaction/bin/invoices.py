@@ -22,16 +22,16 @@
 import argparse
 import base64
 import json
-import random
 import string
 from datetime import datetime, timedelta
 
 import requests
+import secrets
 
 
 # Function to generate a random alphanumeric string
 def generate_random_string(length=10):
-    return "".join(random.choices(string.ascii_letters + string.digits, k=length))
+    return "".join(secrets.SystemRandom().choices(string.ascii_letters + string.digits, k=length))
 
 
 def read_json(filepath):
